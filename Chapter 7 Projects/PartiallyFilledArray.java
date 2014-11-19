@@ -51,4 +51,26 @@ public class PartiallyFilledArray
         values[index2] = temp;
     }
     
+    public void insertElement(int val)
+    {
+        if(currentSize == values.length)
+        {
+            growArray();
+        }
+        values[currentSize] = val; 
+        currentSize++;
+    }
+    
+    private void growArray()
+    {
+        int newArraySize = values.length*2;
+        int[] newArray = new int [newArraySize];
+        
+        for(int i = 0; i < values.length; i++)
+        {
+            newArray[i] = values[i];
+        }
+        
+        values = newArray;
+    }
 }
