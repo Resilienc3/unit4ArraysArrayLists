@@ -7,36 +7,24 @@ public class ArrayOps2
     private int[] values;
     private int currentSize;
     
-    public ArrayOps2()
+    public ArrayOps2(int[]  initialValues)
     {
-        values = new int[10];
-        currentSize = 0;
-    }
-
-    public void fillWithSquares()
-    {
-        Scanner s = new Scanner(System.in);
-        System.out.print("How big would you like the array to be? (10 or less): ");
-        for( int i = 0; i <= 5; i++)
-        {
-            values[i] = i*i;
-            currentSize++;
-        }
+        values = initialValues;
+        currentSize = values.length;
     }
     
     public void shiftRight()
     {
-        for( int i = 0; i < currentSize - 1; i++)
+        int last = values[currentSize -1];
+        int temp = values[1];
+        values[1] = values[0];
+        for( int i = 1; i < currentSize - 1; i++)
         {
-            int temp = values[i+1];
-            for(int x = 0; x <1; x++)
-            {
-                values[i] = values[i+1];
-                   
-            }   
+            values[i] = temp;
+            temp = values[i+1];
             
         }
-        values[0] = values[currentSize-1];
+        values[0] = last;
     }
     
     public void swapFirstLast( int index1, int index2)
@@ -59,16 +47,20 @@ public class ArrayOps2
     
     public void bigger()
     {
+        int preV = values[0];
+        
         for(int i = 1; i < currentSize - 1; i ++)
         {
+            int temp = values[i];
             if(values[i-1]> values[i])
             {
-                values[i] = values[i-1];
+                values[i] = preV;
             }
             else if(values[i+1]> values[i])
             {
                 values[i] = values[i+1];
             }
+            preV = temp;
         }
     }
     
@@ -82,7 +74,7 @@ public class ArrayOps2
             values[index+1] = values[currentSize -1];
             currentSize--;
         }
-        else if( currentSize % 2 == 1)
+        else
         {
             values[index] = values[currentSize - 1];
             currentSize--;
