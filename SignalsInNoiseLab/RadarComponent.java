@@ -88,6 +88,7 @@ public class RadarComponent extends JComponent
             }
         }
         
+        
         // draw the image for the accumulated radar data to the right of the current scan image
         final int X_OFFSET = cols * CELL_WIDTH;
         
