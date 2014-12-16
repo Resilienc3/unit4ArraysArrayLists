@@ -63,6 +63,16 @@ public class Radar
      */
     public void scan()
     {
+        //copy currentScan to prevScan
+        boolean[][] prevScan = new boolean[currentScan.length][currentScan[0].length];
+        for(int row = 0; row < currentScan.length; row++)
+        {
+            for(int col = 0; col < currentScan[0].length; col++)
+            {
+                prevScan[row][col] = currentScan[row][col];
+            }
+        }
+        
         // zero the current scan grid
         for(int row = 0; row < currentScan.length; row++)
         {
@@ -80,39 +90,27 @@ public class Radar
         // inject noise into the grid
         injectNoise();
         
-        //copy currentScan to prevScan
-        boolean[][] prevScan = new boolean[currentScan.length][currentScan[0].length];
-        for(int row = 0; row < currentScan.length; row++)
-        {
-            for(int col = 0; col < currentScan[0].length; col++)
-            {
-                prevScan[row][col] = currentScan[row][col];
-            }
-        }
+       
+     
         
-        ArrayList<Integer> dxL;
-        ArrayList<Integer> dyL;
-        //compare the scans for dy's and dx's
-        for(int row = 0; row < currentScan.length; row++)
+        //compare the scans for dy's and dx's and update the accumulator
+        for(int row = 0; row < prevScan.length; row++)
         {
-            for(int col = 0; col < currentScan[0].length; col++)
+            for(int col = 0; col < prevScan[0].length; col++)
             {
-                for(int i = 0; i <= 10; i++)
+                for(int x = -5; x <= 5; x++)
                 {
-                    if( prevScan[row][col] == true)
+                    for(int y = -5; y <= 5; y++)
                     {
-                        
+                        if(prevScan[row][col] == true)
+                        {
+                           if(row + x != 0 || row + x != 99 && col + y != 0 || col + y != 99 && currentScan[row + x][col + y] == true)
+                           {
+                               accumulator[row + x + 5][col + y + 5]++;
+                           }                        
+                        }   
                     }
                 }
-            }
-        }
-        
-        // udpate the accumulator
-        for(int row = 0; row < currentScan.length; row++)
-        {
-            for(int col = 0; col < currentScan[0].length; col++)
-            {
-               
             }
         }
         
