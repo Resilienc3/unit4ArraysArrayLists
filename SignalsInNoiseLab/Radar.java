@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 /**
  * The model for radar scan and accumulator
  * 
@@ -81,7 +81,7 @@ public class Radar
         injectNoise();
         
         //copy currentScan to prevScan
-        int[][]prevScan = int[rows][cols]
+        boolean[][] prevScan = new boolean[currentScan.length][currentScan[0].length];
         for(int row = 0; row < currentScan.length; row++)
         {
             for(int col = 0; col < currentScan[0].length; col++)
@@ -90,18 +90,29 @@ public class Radar
             }
         }
         
+        ArrayList<Integer> dxL;
+        ArrayList<Integer> dyL;
         //compare the scans for dy's and dx's
+        for(int row = 0; row < currentScan.length; row++)
+        {
+            for(int col = 0; col < currentScan[0].length; col++)
+            {
+                for(int i = 0; i <= 10; i++)
+                {
+                    if( prevScan[row][col] == true)
+                    {
+                        
+                    }
+                }
+            }
+        }
         
         // udpate the accumulator
         for(int row = 0; row < currentScan.length; row++)
         {
             for(int col = 0; col < currentScan[0].length; col++)
             {
-                if(currentScan[row][col] == true)
-                {
-                    accumulator[row][col]++;
-                   
-                }
+               
             }
         }
         
@@ -114,9 +125,11 @@ public class Radar
      * 
      * @param   row     the row in which the monster is located
      * @param   col     the column in which the monster is located
+     * @param   dx      the amount the monster moves in the x direction
+     * @param   dy      the amount the monster moves in the y direction
      * @pre row and col must be within the bounds of the radar grid
      */
-    public void setMonsterLocationAndVelocity(int row, int col)
+    public void setMonsterLocationAndVelocity(int row, int col, int dx, int dy)
     {
         // remember the row and col of the monster's location
         monsterLocationRow = row;
