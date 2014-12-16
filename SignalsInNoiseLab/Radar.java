@@ -23,6 +23,18 @@ public class Radar
     
     // number of scans of the radar since construction
     private int numScans;
+    
+    //maximum difference in the x value
+    private int maxdx = 5;
+    
+    //maximum difference in the y value
+    private int maxdy = 5;
+    
+    //actual difference in the x value
+    private int dx;
+    
+    //actual difference in the y value
+    private int dy;
 
     /**
      * Constructor for objects of class Radar
@@ -61,10 +73,24 @@ public class Radar
         }
         
         // detect the monster
-        currentScan[monsterLocationRow][monsterLocationCol] = true;
+        currentScan[monsterLocationRow + this.dx][monsterLocationCol + this.dy] = true;
         
+        monsterLocationRow = monsterLocationRow + this.dx;
+        monsterLocationCol = monsterLocationCol + this.dy;
         // inject noise into the grid
         injectNoise();
+        
+        //copy currentScan to prevScan
+        int[][]prevScan = int[rows][cols]
+        for(int row = 0; row < currentScan.length; row++)
+        {
+            for(int col = 0; col < currentScan[0].length; col++)
+            {
+                prevScan[row][col] = currentScan[row][col];
+            }
+        }
+        
+        //compare the scans for dy's and dx's
         
         // udpate the accumulator
         for(int row = 0; row < currentScan.length; row++)
@@ -73,7 +99,8 @@ public class Radar
             {
                 if(currentScan[row][col] == true)
                 {
-                   accumulator[row][col]++;
+                    accumulator[row][col]++;
+                   
                 }
             }
         }
@@ -89,7 +116,7 @@ public class Radar
      * @param   col     the column in which the monster is located
      * @pre row and col must be within the bounds of the radar grid
      */
-    public void setMonsterLocation(int row, int col)
+    public void setMonsterLocationAndVelocity(int row, int col)
     {
         // remember the row and col of the monster's location
         monsterLocationRow = row;
