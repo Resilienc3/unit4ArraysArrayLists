@@ -1,9 +1,9 @@
-import java.util.ArrayList;
+import java.util.Scanner;
 /**
  * The model for radar scan and accumulator
  * 
- * @author @gcschmit
- * @version 19 July 2014
+ * @author @gcschmit @Jalen Smith
+ * @version 12 December 2014
  */
 public class Radar
 {
@@ -53,9 +53,38 @@ public class Radar
         monsterLocationRow = (int)(Math.random() * rows);
         monsterLocationCol = (int)(Math.random() * cols);
         
-        noiseFraction = 0.05;
+        noiseFraction = 0.1;
         numScans= 0;
+        
+        //set dx and dy
+        Scanner s = new Scanner(System.in);
+        System.out.print("What is the dx: ");
+        dx = s.nextInt();
+        System.out.print("What is the dy: ");
+        dy = s.nextInt();
     }
+    
+
+    /**
+     * Sets new dx
+     *
+     * @param  newDx   the new dx
+     */
+    public void setDx(int newDx)
+    {
+        this.dx = newDx;
+    }
+    
+     /**
+     * Sets new dy
+     *
+     * @param  newDy   the new dy
+     */
+    public void setDy(int newDy)
+    {
+        this.dy = newDy;
+    }
+
     
     /**
      * Performs a scan of the radar. Noise is injected into the grid and the accumulator is updated.
@@ -83,30 +112,30 @@ public class Radar
         }
         
         // detect the monster
-        currentScan[monsterLocationRow + this.dx][monsterLocationCol + this.dy] = true;
         
-        monsterLocationRow = monsterLocationRow + this.dx;
-        monsterLocationCol = monsterLocationCol + this.dy;
+        if(!(monsterLocationRow + this.dy <= 0 || monsterLocationRow + this.dy >= 99 || monsterLocationCol + this.dx <= 0 || monsterLocationCol + this.dx >= 99))
+        {
+            currentScan[monsterLocationRow + this.dy][monsterLocationCol + this.dx] = true;
+            monsterLocationRow = monsterLocationRow + this.dy;
+            monsterLocationCol = monsterLocationCol + this.dx;
+        }
+        
         // inject noise into the grid
         injectNoise();
-        
-       
-     
-        
         //compare the scans for dy's and dx's and update the accumulator
         for(int row = 0; row < prevScan.length; row++)
         {
             for(int col = 0; col < prevScan[0].length; col++)
             {
-                for(int x = -5; x <= 5; x++)
+                for(int y = -5; y <= 5; y++)
                 {
-                    for(int y = -5; y <= 5; y++)
+                    for(int x = -5; x <= 5; x++)
                     {
                         if(prevScan[row][col] == true)
                         {
-                           if(row + x != 0 || row + x != 99 && col + y != 0 || col + y != 99 && currentScan[row + x][col + y] == true)
+                           if(!(row + y <= 0 || row + y >= 99) && !(col + x <= 0 || col + x >= 99) && currentScan[row + y][col + x] == true)
                            {
-                               accumulator[row + x + 5][col + y + 5]++;
+                               accumulator[y + 5][x + 5]++;
                            }                        
                         }   
                     }
@@ -117,19 +146,124 @@ public class Radar
         // keep track of the total number of scans
         numScans++;
     }
+    
+
+
+    /**
+     * Runs through the accumulator to get the dx that was most common
+     * @return     the guess dx
+     */
+    public int getGuessDx()
+    {
+        int max = 0;
+        int guessDx = 0;
+        int guessDy = 0;
+         for(int dx = 0; dx < accumulator.length; dx++)
+        {
+            for(int dy = 0; dy < accumulator[0].length; dy++)
+            {
+                if(accumulator[dy][dx] > max)
+                {
+                    max = accumulator[dy][dx];
+                    guessDx = dx - 5;
+                    guessDy = dy - 5;
+                }
+            }
+        }
+        return guessDx;
+    }
+    
+    /**
+     * Runs through the accumulator to get the dy that was most common
+     * @return     the guess dy
+     */
+    public int getGuessDy()
+    {
+        int max = 0;
+        int guessDx = 0;
+        int guessDy = 0;
+         for(int dx = 0; dx < accumulator.length; dx++)
+        {
+            for(int dy = 0; dy < accumulator[0].length; dy++)
+            {
+                if(accumulator[dy][dx] > max)
+                {
+                    max = accumulator[dy][dx];
+                    guessDx = dx - 5;
+                    guessDy = dy - 5;
+                }
+            }
+        }
+        return guessDy;
+    }
+
+    /**
+     * inds the dx and dy of the accumulator
+     * 
+     * @return     String message of Guess dx and dy
+     */
+    public String printGuessDxDy()
+    {
+        int max = 0;
+        int guessDx = 0;
+        int guessDy = 0;
+         for(int dx = 0; dx < accumulator.length; dx++)
+        {
+            for(int dy = 0; dy < accumulator[0].length; dy++)
+            {
+                if(accumulator[dy][dx] > max)
+                {
+                    max = accumulator[dy][dx];
+                    guessDx = dx - 5;
+                    guessDy = dy - 5;
+                }
+            }
+        }
+        String guessDxDy = "Guess dx = " + guessDx + "\tGuess dy = " + guessDy;
+        return guessDxDy;
+    }
+
+    /**
+     * returns the value of this.dx
+     * @return     this.dx
+     */
+    public int getDx()
+    {
+        return this.dx;
+    }
+    
+    /**
+     * returns the value of this.dy
+     * @return     this.dy
+     */
+    public int getDy()
+    {
+        return this.dy;
+    }
+
+    /**
+     * Gets the actual dx and dy of the monster
+     * @return     String containing dx and dy
+     */
+    public String printDxDy()
+    {
+        String dxDy = "Real dx = " + this.dx + "\tReal dy = " + this.dy;
+        return dxDy;
+    }
+
 
     /**
      * Sets the location of the monster
-     * 
-     * @param   row     the row in which the monster is located
-     * @param   col     the column in which the monster is located
-     * @param   dx      the amount the monster moves in the x direction
-     * @param   dy      the amount the monster moves in the y direction
      * @pre row and col must be within the bounds of the radar grid
      */
-    public void setMonsterLocationAndVelocity(int row, int col, int dx, int dy)
+    public void setMonsterLocation()
     {
         // remember the row and col of the monster's location
+        Scanner s = new Scanner(System.in);
+        System.out.print("What is the Monster's y position: ");
+        int row = s.nextInt();
+        System.out.print("What is the Monster's x position: ");
+        int col = s.nextInt();
         monsterLocationRow = row;
         monsterLocationCol = col;
         
